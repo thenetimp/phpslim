@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="default" defaultIdMethod="native" namespace="Hackerspace">
+
+  <table name="users" phpName="User">
+    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+    <column name="email_address" type="varchar" size="255" required="true" unique="true" />
+    <unique name="idx_email_address">
+      <unique-column name="email_address" />
+    </unique>
+    <column name="real_email_address" type="varchar" size="255" required="true" comment="email addresses with the + sign parsed"/>
+    <column name="password_hash" type="varchar" size="255" required="true" />
+    <column name="first_name" type="varchar" size="255" required="true" />
+    <column name="last_name" type="varchar" size="255" required="true" />
+    <column name="alias" type="varchar" size="255" required="true" />
+    <column name="terms_agree" type="boolean" required="true" />
+    <column name="newsletter_subscribe" type="boolean" required="true" />
+    <column name="failed_login_attempts" type="integer" required="true" default="0" />
+    <column name="last_login_attempt" type="timestamp" />
+    <behavior name="timestampable" />
+  </table>
+  
+  <table name="user_groups" phpName="UserGroup">
+    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+    <column name="name" type="varchar" size="255" required="true" />
+    <behavior name="timestampable" />
+  </table>
+  
+  <table name="user_groups_user" phpName="UserGroupUser">
+    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+    <column name="user_id" type="integer" foreignTable="users" foreignReference="id"
+       required="true" onDelete="cascade" />
+    <column name="user_group_id" type="integer" foreignTable="user_groups" foreignReference="id"
+       required="true" onDelete="cascade"/>
+    <unique name="idx_user_group_user">
+      <unique-column name="user_id" />
+      <unique-column name="user_group_id" />
+    </unique>
+    <behavior name="timestampable" />
+  </table>
+  
+</database>

@@ -1,0 +1,47 @@
+# An example of Propel configuration file in yaml
+
+
+
+propel:
+  database:
+    connections:
+      default:
+        adapter: mysql
+        classname: Propel\Runtime\Connection\DebugPDO
+        dsn: mysql:host=localhost;dbname=local_hackers
+        user: root
+        password:
+        attributes:
+  runtime:
+    defaultConnection: default
+    connections:
+      - default
+  generator:
+    defaultConnection: default
+    connections:
+      - default
+          
+  ### Directories and Filenames ###
+  paths:
+    # Directory where the project files (`schema.xml`, etc.) are located.
+    # Default value is current path #
+    projectDir: ./
+ 
+    # The directory where Propel expects to find your `schema.xml` file.
+    schemaDir: ./
+ 
+    # The directory where Propel should output classes, sql, config, etc.
+    # Default value is current path #
+    outputDir: ../src
+ 
+    # The directory where Propel should output generated object model classes.
+    phpDir: ../src
+ 
+    # The directory where Propel should output the compiled runtime configuration.
+    phpConfDir: ./propel
+
+    # The directory where Propel should output the generated DDL (or data insert statements, etc.)
+    sqlDir: ./propel/sql
+
+    # Directory in which your composer.json resides
+    composerDir: ../
