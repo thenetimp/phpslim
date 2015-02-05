@@ -5,7 +5,7 @@ namespace Security;
 use Hackerspace\User as User;
 use Hackerspace\UserQuery as UserQuery;
  
-class HttpDigestAuth extends \Slim\Middleware
+class HttpXDigestAuth extends \Slim\Middleware
 {
 
     /**
@@ -30,7 +30,7 @@ class HttpDigestAuth extends \Slim\Middleware
     public function deny_access() {
         $res = $this->app->response();
         $res->status(401);
-        $res->header('WWW-Authenticate', sprintf('XDigest realm="%s" ,qop="auth",nonce="%s",opaque="%s"', 
+        $res->header('WWW-Authenticate-X', sprintf('Digest realm="%s" ,qop="auth",nonce="%s",opaque="%s"', 
             $this->realm, uniqid(), md5($this->realm)));
     }
 
@@ -44,13 +44,11 @@ class HttpDigestAuth extends \Slim\Middleware
     public function authenticate($digestData) {
 
         $query = new UserQuery();
-        $user = $query->getUserByEmailAddress($digestData);
+        
+        $user = $query->getUserByEmailAddress($digestData['username']);
 
         // If no user than return false
         if(!$user) return false;
-
-        // $2a$10$3a6e9fdc6ff518125982fuDYwUHkEJokgXKKHTjxMN80j.41hwmVK
-        // $a1 = md5($digestData['username'] . ':' . $this->realm . ':' . 'testing12345');
 
         // Get the a1 hash from the database table and run the algorithm for http digest.
         $a1 = $user->getPasswordHash();
@@ -81,13 +79,18 @@ class HttpDigestAuth extends \Slim\Middleware
         $req = $this->app->request();
         $res = $this->app->response();
         $authDigest = $req->headers('PHP_AUTH_DIGEST');
-        $digestData = $this->http_digest_parse($authDigest);
+        $headers = getallheaders();
+        
+        if(isset($headers['Authorization']))
+        {
+            $digestData = $this->http_digest_parse($headers['Authorization']);
+        }
         
         // If we have the authdigest then parse 
         // it and try to authenticate the user.
-        if($digestData && $this->authenticate($digestData))
+        if(isset($digestData) && $digestData && $digestData['username'] != "" && $this->authenticate($digestData))
         {
-            $this->next->call();
+           $this->next->call();
         } else {
             $this->deny_access();
         }
@@ -99,16 +102,20 @@ class HttpDigestAuth extends \Slim\Middleware
         // protect against missing data
         $needed_parts = array('nonce'=>1, 'nc'=>1, 'cnonce'=>1, 'qop'=>1, 'username'=>1, 'uri'=>1, 'response'=>1);
         $digestData = array();
-        $keys = implode('|', array_keys($needed_parts));
+        $keys = implode('', array_keys($needed_parts));
+        $digestParts = explode(" ", $txt);
 
-        preg_match_all('@(' . $keys . ')=(?:([\'"])([^\2]+?)\2|([^\s,]+))@', $txt, $matches, PREG_SET_ORDER);
+        // Remove the first element of the array and see if we should exit.
+        if(array_shift($digestParts) != "Digest") return false;
 
-        foreach ($matches as $m) {
-            $digestData[$m[1]] = $m[3] ? $m[3] : $m[4];
-            unset($needed_parts[$m[1]]);
+        foreach ($digestParts as $dp) {
+            list($key, $value) = explode("=", $dp);
+            
+            $value = rtrim($value, ',');
+            $value = trim($value, '"');
+            $digestData[$key] = $value;
         }
-
-        return $needed_parts ? false : $digestData;
+        return $digestData;
     }
 
         

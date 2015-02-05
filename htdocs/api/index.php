@@ -5,7 +5,8 @@ require_once '../../bootstrap.php';
 use Hackerspace\User as User;
 use Hackerspace\UserQuery as UserQuery;
 // use Security\HttpBasicAuth as HttpBasicAuth;
-use Security\HttpDigestAuth as HttpDigestAuth;
+// use Security\HttpDigestAuth as HttpDigestAuth;
+use Security\HttpXDigestAuth as HttpXDigestAuth;
 
 $unsecuredUrls = array('/api/user/register');
 
@@ -17,7 +18,7 @@ $app->add(new \JsonApiMiddleware());
 if(!in_array($_SERVER['REQUEST_URI'], $unsecuredUrls))
 {
   // $app->add(new HttpBasicAuth("Unauthorized"));
-  $app->add(new HttpDigestAuth("Unauthorized"));
+  $app->add(new HttpXDigestAuth("Unauthorized"));
 }
 
 $app->group('/user', function () use ($app)
@@ -96,6 +97,17 @@ $app->group('/user', function () use ($app)
    * Route for authenticating a user.
    */
   $app->get('/authenticate', function() use ($app)
+  {
+    global $config;
+
+    // Return the response
+    $app->render(200, array());
+  });
+
+  /**
+   * Route for authenticating a user.
+   */
+  $app->post('/authenticate', function() use ($app)
   {
     global $config;
 
