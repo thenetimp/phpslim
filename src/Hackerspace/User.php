@@ -53,6 +53,15 @@ class User extends BaseUser
     return true;
   }
   
+  public function getProfileArray()
+  {
+    $profile = $this->toArray();
+    unset($profile['PasswordHash']);
+    unset($profile['CreatedAt']);
+    unset($profile['UpdatedAt']);
+    return $profile;
+  }
+  
   static function parseRealEmailAddress($emailAddress)
   {
     list($user, $domain) = explode("@", $emailAddress);

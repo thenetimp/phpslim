@@ -54,6 +54,7 @@ class UserQuery extends BaseUserQuery
    */
   static function getUserByEmailAddress($emailAddress)
   {
+      
     // query the database by email address.
     $result = self::create()
       ->filterByEmailAddress($emailAddress)

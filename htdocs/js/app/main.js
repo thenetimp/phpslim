@@ -38,7 +38,8 @@
       return {
         successful: function(response)
         {
-          console.log('login success');
+          console.log("error:" + response['error']);
+          console.log("status:" + response['status']);
         },
         error: function(response)
         {
@@ -86,7 +87,7 @@
   }]);
 
 
-  app.controller("LoginController", ['dgAuthService', function(dgAuthService){
+  app.controller("LoginController", ['$http', 'dgAuthService', function($http, dgAuthService){
     
     this.user = {
       emailAddress: "johndoe@gmail.com",
@@ -95,8 +96,23 @@
     
     this.doLogin = function()
     {
+      // console.log('test');
       dgAuthService.setCredentials(this.user.emailAddress, this.user.password);
       dgAuthService.signin();
+      this.getUserInfo();
+    };
+    
+    this.getUserInfo = function()
+    {
+      $http.get('/api/user/profile')
+        .success(function(data)
+        {
+          console.log(data);
+        })
+        .error(function()
+        {
+          console.log('failure');
+        });
     }
 
   }]);

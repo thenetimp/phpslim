@@ -43,27 +43,27 @@ class HttpXDigestAuth extends \Slim\Middleware
      */
     public function authenticate($digestData) {
 
-        $query = new UserQuery();
-        
-        $user = $query->getUserByEmailAddress($digestData['username']);
+      global $user;
+      $query = new UserQuery();
+      $user = $query->getUserByEmailAddress($digestData['username']);
 
-        // If no user than return false
-        if(!$user) return false;
+      // If no user than return false
+      if(!$user) return false;
 
-        // Get the a1 hash from the database table and run the algorithm for http digest.
-        $a1 = $user->getPasswordHash();
-        $a2 = md5($_SERVER['REQUEST_METHOD'].':'.$digestData['uri']);
-        $validResponse = md5($a1 . ':' . $digestData['nonce'] . ':' . $digestData['nc'] . ':' . 
-            $digestData['cnonce'] . ':' . $digestData['qop'] . ':' . $a2);
+      // Get the a1 hash from the database table and run the algorithm for http digest.
+      $a1 = $user->getPasswordHash();
+      $a2 = md5($_SERVER['REQUEST_METHOD'].':'.$digestData['uri']);
+      $validResponse = md5($a1 . ':' . $digestData['nonce'] . ':' . $digestData['nc'] . ':' . 
+          $digestData['cnonce'] . ':' . $digestData['qop'] . ':' . $a2);
 
-        // If the valid response is the same as the digest response.
-        if($digestData['response'] == $validResponse)
-        {
-            return true;
-        }
+      // If the valid response is the same as the digest response.
+      if($digestData['response'] == $validResponse)
+      {
+          return true;
+      }
 
-        // Return false since we didn't havea valid response
-        return false;
+      // Return false since we didn't havea valid response
+      return false;
     }
 
 

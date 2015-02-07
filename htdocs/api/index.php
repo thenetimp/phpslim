@@ -6,18 +6,17 @@ use Hackerspace\User as User;
 use Hackerspace\UserQuery as UserQuery;
 // use Security\HttpBasicAuth as HttpBasicAuth;
 // use Security\HttpDigestAuth as HttpDigestAuth;
-use Security\HttpXDigestAuth as HttpXDigestAuth;
+use Security\HttpDigestAuth as HttpXDigestAuth;
 
 $unsecuredUrls = array('/api/user/register');
 
 $app = new \Slim\Slim();
 $app->view(new \JsonApiView());
 $app->add(new \JsonApiMiddleware());
-
+$user = null;
 
 if(!in_array($_SERVER['REQUEST_URI'], $unsecuredUrls))
 {
-  // $app->add(new HttpBasicAuth("Unauthorized"));
   $app->add(new HttpXDigestAuth("Unauthorized"));
 }
 
@@ -96,7 +95,7 @@ $app->group('/user', function () use ($app)
   /**
    * Route for authenticating a user.
    */
-  $app->get('/authenticate', function() use ($app)
+  $app->post('/authenticate', function() use ($app)
   {
     global $config;
 
@@ -107,13 +106,35 @@ $app->group('/user', function () use ($app)
   /**
    * Route for authenticating a user.
    */
-  $app->post('/authenticate', function() use ($app)
+  $app->get('/profile', function() use ($app)
   {
     global $config;
+    global $user;
+    
+    if($user)
+    {
+        $profile = $user->getProfileArray();
+        
+        
+        $response = array(
+          "error" => false,
+          "status" => 200,
+          "data" =>  $profile
+        );
+    }
+    else
+    {
+        $response = array(
+          "error" => true,
+          "status" => 200,
+          "msg" => ERROR_USER_EMPTY
+        );
+    }
 
     // Return the response
-    $app->render(200, array());
+    $app->render(200, $response);
   });
+
 
 });
 

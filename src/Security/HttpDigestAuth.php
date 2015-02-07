@@ -43,9 +43,10 @@ class HttpDigestAuth extends \Slim\Middleware
      *
      */
     public function authenticate($digestData) {
+        global $user;
 
         $query = new UserQuery();
-        $user = $query->getUserByEmailAddress($digestData);
+        $user = $query->getUserByEmailAddress($digestData['username']);
 
         // If no user than return false
         if(!$user) return false;
