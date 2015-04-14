@@ -2,23 +2,65 @@
 
 require_once '../../bootstrap.php';
 
-use Hackerspace\User as User;
-use Hackerspace\UserQuery as UserQuery;
+// use Hackerspace\User as User;
+// use Hackerspace\UserQuery as UserQuery;
 // use Security\HttpBasicAuth as HttpBasicAuth;
 // use Security\HttpDigestAuth as HttpDigestAuth;
-use Security\HttpDigestAuth as HttpXDigestAuth;
+// use Security\HttpDigestAuth as HttpXDigestAuth;
 
-$unsecuredUrls = array('/api/user/register');
+$unsecuredUrls = array('/api/user/register','/submission/mortgage');
 
 $app = new \Slim\Slim();
 $app->view(new \JsonApiView());
 $app->add(new \JsonApiMiddleware());
 $user = null;
+$body = json_decode($app->request->getBody(),true);
 
-if(!in_array($_SERVER['REQUEST_URI'], $unsecuredUrls))
+
+// if(!in_array($_SERVER['REQUEST_URI'], $unsecuredUrls))
+// {
+//   $app->add(new HttpXDigestAuth("Unauthorized"));
+// }
+
+$app->group('/submission', function() use ($app)
 {
-  $app->add(new HttpXDigestAuth("Unauthorized"));
-}
+  $app->post('/mortgage', function () use ($app)
+  {
+    global $body;
+    
+    // Instanciate the $response array..
+    $response = array('error'=> false);
+
+    $submission = array(
+      // Lead's personal information.
+      'firstName' => $body['personal']['firstName'],
+      'lastName' => $body['personal']['lastName'],
+      'address' => $body['personal']['address'],
+      'city' => $body['personal']['city'],
+      'state' => $body['personal']['state'],
+      'postalCode' => $body['personal']['postalCode'],
+      'phoneNumber' => $body['personal']['phoneNumber'],
+      'alternativePhoneNumber' => $body['personal']['alternativePhoneNumber'],
+      'bestCallTime' => $body['personal']['bestCallTime'],
+      'emailAddress' => $body['personal']['emailAddress'],
+
+      // Lead's loan information.
+      'creditRange' => $body['loan']['creditRange'],
+      'loanType' => $body['loan']['loanType'],
+      'loanAmount' => $body['loan']['loanAmount'],
+      'downPayment' => $body['loan']['downPayment'],
+      'interestRateType' => $body['loan']['interestRateType'],
+      'propertyType' => $body['loan']['propertyType'],
+      'propertyState' => $body['loan']['state'],
+      'propertyPostalCode' => $body['loan']['postalCode'],
+    );
+
+
+
+    $app->render(200, $response);
+  });
+});
+
 
 $app->group('/user', function () use ($app)
 {

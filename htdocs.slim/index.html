@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="authMain">
+  <head>
+    <title>Slim</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/img/favicon.ico">
+    
+    <!-- Get fonts from google -->
+    <link  rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Roboto:400italic,700italic,300,700,300italic,400&subset=latin,cyrillic-ext'>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" type="text/css"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+  </head>
+  <body>
+    <div class="wrapper authenticated">
+      <div class="main" ng-view>
+        &nbsp;
+        <div class="row" ng-controller="LoginController as logCtrl">
+          <div class="col-md-4 col-md-offset-4">
+            <form novalidate ng-submit="logCtrl.doLogin()">
+              <div class="form-group">
+              <label>email</label>
+              <input type="email" class="form-control" ng-model="logCtrl.user.emailAddress"><br>
+              </div>
+              <div class="form-group">
+              <label>password</label>
+              <input type="password" class="form-control" ng-model="logCtrl.user.password">
+              </div>
+              <div class="form-group">
+                <button class="btn btn-primary" style="display: block; width: 100%;">Login</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script type="text/javascript"
+      src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular.min.js"></script>
+    <script type="text/javascript"
+      src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular-route.min.js"></script>
+    <script type="text/javascript"
+      src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript"
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/ui-bootstrap-tpls.min.js"></script>
+
+
+    <script type="text/javascript" src="/js/angular-md5.min.js"></script>
+    <script type="text/javascript" src="/js/angular-state-machine.min.js"></script>
+    <script type="text/javascript" src="/js/angular-auth-digest.js"></script>
+    <script type="text/javascript" src="/js/app/main.js"></script>
+  </body>
+</html>
