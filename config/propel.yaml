@@ -8,7 +8,7 @@ propel:
       default:
         adapter: mysql
         classname: Propel\Runtime\Connection\DebugPDO
-        dsn: mysql:host=localhost;dbname=local_hackers
+        dsn: mysql:host=localhost;dbname=local_leads
         user: root
         password:
         attributes:

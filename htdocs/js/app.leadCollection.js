@@ -8,29 +8,32 @@
   app.controller('LeadCollectionController', function()
   {
     self = this;
-    self.step = 1;
+    self.step = 2;
     self.leadData = {
       personal: {
-        firstName: "",
-        lastName: "",
-        city: "",
-        state: "",
-        postalCode: "",
-        bestCallTime: "",
-        phoneNumber: "",
-        alternatePhone: "",
-        emailAddress: ""
+        firstName: "James",
+        lastName: "Andrews",
+        address: "800 Boylston Street",
+        city: "Boston",
+        state: 22,
+        postalCode: "01440",
+        bestCallTime: "morning",
+        phoneNumber: "9785551212",
+        alternatePhone: "6175551212",
+        emailAddress: "jandrews@japanfriend.com"
       },
       loan: {
-        state: "",
-        postalCode: "",
-        creditRange: "",
-        loanType: "",
-        loanAmount: 0,
-        propertyType: "",
-        interestRateType: "",
-        downPayment: "",
-        notes: "",
+        creditRange: 1,
+        type: 1,
+        amount: 120000,
+        downPayment: "20000",
+        interestRateType: 1,
+        propertyType: 1,
+        propertyState: 12,
+        propertyPostalCode: "00000",
+      },
+      extra: {
+        notes: "Here are my notes",
         expandedCredit: false
       }
     }

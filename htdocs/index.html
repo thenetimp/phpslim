@@ -49,7 +49,7 @@
             </div>
             <div class="form-group">
               <label for="inputCallTime">Best Call Time:</label>
-              <select class="form-control" id="inputCallTime" name="inputCallTime"  ng-model="leadCtrl.leadData.personal.callTime">
+              <select class="form-control" id="inputCallTime" name="inputCallTime"  ng-model="leadCtrl.leadData.personal.bestCallTime">
                 <option value="morning">Morning</option>
                 <option value="afternoon">Afternoon</option>
                 <option value="evening">Evening</option>
@@ -62,12 +62,12 @@
             <div class="form-group">
               <label for="inputCreditRange">Credit Range:</label>
               <select class="form-control" id="inputCreditRange" name="inputCreditRange"  ng-model="leadCtrl.leadData.loan.creditRange">
-                <option value="excellent">Excellent</option>
-                <option value="good">Good</option>
-                <option value="bad">Bad</option>
-                <option value="some">Some Credit Problems</option>
-                <option value="many">Many Credit Problems</option>
-                <option value="special">Special Circiumstances</option>
+                <option value="1">Excellent</option>
+                <option value="2">Good</option>
+                <option value="3">Bad</option>
+                <option value="4">Some Credit Problems</option>
+                <option value="5">Many Credit Problems</option>
+                <option value="6">Special Circiumstances</option>
               </select>
             </div>
           </fieldset>
@@ -76,25 +76,73 @@
             <div class="form-group">
               <label for="inputState">State:</label>
               <select class="form-control" id="inputPropertyState" name="inputPropertyState"  ng-model="leadCtrl.leadData.loan.propertyState">
-                <option value="MA">Massachusetts</option>
-                <option value="CO">Colorado</option>
-                <option value="AL">Alaska</option>
+                <option value="1">Alabama</option>
+                <option value="2">Alaska</option>
+                <option value="3">Arizona</option>
+                <option value="4">Arkansas</option>
+                <option value="5">California</option>
+                <option value="6">Colorado</option>
+                <option value="7">Connecticut</option>
+                <option value="8">Delaware</option>
+                <option value="9">District of Columbia</option>
+                <option value="10">Florida</option>
+                <option value="11">Georgia</option>
+                <option value="12">Hawaii</option>
+                <option value="13">Idaho</option>
+                <option value="14">Illinois</option>
+                <option value="15">Indiana</option>
+                <option value="16">Iowa</option>
+                <option value="17">Kansas</option>
+                <option value="18">Kentucky</option>
+                <option value="19">Louisiana</option>
+                <option value="20">Maine</option>
+                <option value="21">Maryland</option>
+                <option value="22">Massachusetts</option>
+                <option value="23">Michigan</option>
+                <option value="24">Minnesota</option>
+                <option value="25">Mississippi</option>
+                <option value="26">Missouri</option>
+                <option value="27">Montana</option>
+                <option value="28">Nebraska</option>
+                <option value="29">Nevada</option>
+                <option value="30">New Hampshire</option>
+                <option value="31">New Jersey</option>
+                <option value="32">New Mexico</option>
+                <option value="33">New York</option>
+                <option value="34">North Carolina</option>
+                <option value="35">North Dakota</option>
+                <option value="36">Ohio</option>
+                <option value="37">Oklahoma</option>
+                <option value="38">Oregon</option>
+                <option value="39">Pennsylvania</option>
+                <option value="40">Rhode Island</option>
+                <option value="41">South Carolina</option>
+                <option value="42">South Dakota</option>
+                <option value="43">Tennessee</option>
+                <option value="44">Texas</option>
+                <option value="45">Utah</option>
+                <option value="46">Vermont</option>
+                <option value="47">Virginia</option>
+                <option value="48">Washington</option>
+                <option value="49">West Virginia</option>
+                <option value="50">Wisconsin</option>
+                <option value="51">Wyoming</option>
               </select>
             </div>
             <div class="form-group">
               <label for="inputPropertyPostalCode">Zipcode:</label>
-              <input type="text" class="form-control" id="inputPropertyPostalCode" name="inputPropertyPostalCode" placeholder="00000" ng-model="leadCtrl.leadData.loan.postalCode">
+              <input type="text" class="form-control" id="inputPropertyPostalCode" name="inputPropertyPostalCode" placeholder="00000" ng-model="leadCtrl.leadData.loan.propertyPostalCode">
             </div>
             <div class="form-group">
               <label for="inputLoanType">Loan Type:</label>
-              <select class="form-control" id="inputLoanType" name="inputLoanType"  ng-model="leadCtrl.leadData.loan.loanType">
-                <option value="purchase">Purchase</option>
-                <option value="refinance">Refinance</option>
+              <select class="form-control" id="inputLoanType" name="inputLoanType"  ng-model="leadCtrl.leadData.loan.type">
+                <option value="1">Purchase</option>
+                <option value="2">Refinance</option>
               </select>
             </div>
             <div class="form-group">
               <label for="inputLoanAmount">Loan Amount:</label>
-              <select class="form-control" id="inputLoanAmount" name="inputLoanAmount"  ng-model="leadCtrl.loanAmount">
+              <select class="form-control" id="inputLoanAmount" name="inputLoanAmount"  ng-model="leadCtrl.leadData.loan.amount">
                 <option value="" selected="true">Please select</option> 
                 <option value="75000">Less than 75,000</option> 
                 <option value="75000">75,000 - 79,999</option> 
@@ -184,52 +232,130 @@
             <div class="form-group">
               <label for="inputState">State:</label>
               <select class="form-control" id="inputState" name="inputState"  ng-model="leadCtrl.leadData.personal.state">
-                <option value="MA">Massachusetts</option>
-                <option value="CO">Colorado</option>
-                <option value="AL">Alaska</option>
+                <option value="1">Alabama</option>
+                <option value="2">Alaska</option>
+                <option value="3">Arizona</option>
+                <option value="4">Arkansas</option>
+                <option value="5">California</option>
+                <option value="6">Colorado</option>
+                <option value="7">Connecticut</option>
+                <option value="8">Delaware</option>
+                <option value="9">District of Columbia</option>
+                <option value="10">Florida</option>
+                <option value="11">Georgia</option>
+                <option value="12">Hawaii</option>
+                <option value="13">Idaho</option>
+                <option value="14">Illinois</option>
+                <option value="15">Indiana</option>
+                <option value="16">Iowa</option>
+                <option value="17">Kansas</option>
+                <option value="18">Kentucky</option>
+                <option value="19">Louisiana</option>
+                <option value="20">Maine</option>
+                <option value="21">Maryland</option>
+                <option value="22">Massachusetts</option>
+                <option value="23">Michigan</option>
+                <option value="24">Minnesota</option>
+                <option value="25">Mississippi</option>
+                <option value="26">Missouri</option>
+                <option value="27">Montana</option>
+                <option value="28">Nebraska</option>
+                <option value="29">Nevada</option>
+                <option value="30">New Hampshire</option>
+                <option value="31">New Jersey</option>
+                <option value="32">New Mexico</option>
+                <option value="33">New York</option>
+                <option value="34">North Carolina</option>
+                <option value="35">North Dakota</option>
+                <option value="36">Ohio</option>
+                <option value="37">Oklahoma</option>
+                <option value="38">Oregon</option>
+                <option value="39">Pennsylvania</option>
+                <option value="40">Rhode Island</option>
+                <option value="41">South Carolina</option>
+                <option value="42">South Dakota</option>
+                <option value="43">Tennessee</option>
+                <option value="44">Texas</option>
+                <option value="45">Utah</option>
+                <option value="46">Vermont</option>
+                <option value="47">Virginia</option>
+                <option value="48">Washington</option>
+                <option value="49">West Virginia</option>
+                <option value="50">Wisconsin</option>
+                <option value="51">Wyoming</option>
               </select>
             </div>
             <div class="form-group">
-              <label for="inputState">Zipcode:</label>
+              <label for="inputPostalCode">Zipcode:</label>
               <input type="text" class="form-control" id="inputPostalCode" name="inputPostalCode" placeholder="02199" ng-model="leadCtrl.leadData.personal.postalCode">
             </div>
             <div class="form-group">
-              <label for="inputAlternatePhone">Zipcode:</label>
+              <label for="inputAlternatePhone">Alternate Phone:</label>
               <input type="text" class="form-control" id="inputAlternatePhone" name="inputAlternatePhone" placeholder="(617) 555-1212" ng-model="leadCtrl.leadData.personal.alternatePhone">
             </div>
           </fieldset>
           <fieldset>
             <legend>Desired property information.</legend>
             <div class="form-group">
-              <label for="inputState">Property Type:</label>
-              <select class="form-control" id="inputState" name="inputState"  ng-model="leadCtrl.leadData.personal.state">
-                <option value="MA">Massachusetts</option>
-                <option value="CO">Colorado</option>
-                <option value="AL">Alaska</option>
+              <label for="inputPropertyType">Property Type:</label>
+              <select class="form-control" id="inputPropertyType" name="inputPropertyType"  ng-model="leadCtrl.leadData.loan.propertyType">
+                <option value="1">Single Family</option>
               </select>
             </div>
-            
             <div class="form-group">
-              <label for="inputState">Desired Interest Rate:</label>
-              <select class="form-control" id="inputState" name="inputState"  ng-model="leadCtrl.leadData.personal.state">
-                <option value="MA">Massachusetts</option>
-                <option value="CO">Colorado</option>
-                <option value="AL">Alaska</option>
+              <label for="inputInterestRateType">Desired Interest Rate:</label>
+              <select class="form-control" id="inputInterestRateType" name="inputInterestRateType"  ng-model="leadCtrl.leadData.loan.interestRateType">
+                <option value="1">Fixed</option>
+                <option value="2">Variable</option>
               </select>
             </div>
-            
             <div class="form-group">
-              <label for="inputState">Down Payment:</label>
-              <select class="form-control" id="inputState" name="inputState"  ng-model="leadCtrl.leadData.personal.state">
-                <option value="MA">Massachusetts</option>
-                <option value="CO">Colorado</option>
-                <option value="AL">Alaska</option>
+              <label for="inputDownPayment">Down Payment:</label>
+              <select class="form-control" id="inputDownPayment" name="inputDownPayment"  ng-model="leadCtrl.leadData.loan.downPayment">
+                <option value="" selected="true">Please select</option> 
+                <option value="100">100 - 199</option> 
+                <option value="200">200 - 499</option> 
+                <option value="500">500 - 999</option> 
+                <option value="1000">1,000 - 1,499</option> 
+                <option value="1500">1,500 - 1,999</option> 
+                <option value="2000">2,000 - 2,499</option> 
+                <option value="2500">2,500 - 2,999</option> 
+                <option value="3000">3,000 - 3,499</option> 
+                <option value="3500">3,500 - 3,999</option> 
+                <option value="4000">4,000 - 4,499</option> 
+                <option value="4500">4,500 - 4,999</option> 
+                <option value="5000">5,000 - 5,999</option> 
+                <option value="6000">6,000 - 6,999</option> 
+                <option value="7000">7,000 - 7,999</option> 
+                <option value="8000">8,000 - 8,999</option> 
+                <option value="9000">9,000 - 9,999</option> 
+                <option value="10000">10,000 - 10,999</option> 
+                <option value="11000">11,000 - 13,999</option> 
+                <option value="14000">14,000 - 15,999</option> 
+                <option value="16000">16,000 - 17,999</option> 
+                <option value="18000">18,000 - 19,999</option> 
+                <option value="20000">20,000 - 24,999</option> 
+                <option value="25000">25,000 - 29,999</option> 
+                <option value="30000">30,000 - 34,999</option> 
+                <option value="35000">35,000 - 39,999</option> 
+                <option value="40000">40,000 - 44,999</option> 
+                <option value="45000">45,000 - 49,999</option> 
+                <option value="50000">50,000 - 54,999</option> 
+                <option value="55000">55,000 - 59,999</option> 
+                <option value="60000">60,000 - 64,999</option> 
+                <option value="65000">65,000 - 69,999</option> 
+                <option value="70000">70,000 - 74,999</option> 
+                <option value="75000">75,000 - 79,999</option> 
+                <option value="80000">80,000 - 84,999</option> 
+                <option value="85000">85,000 - 89,999</option> 
+                <option value="90000">90,000 - 94,999</option> 
+                <option value="95000">95,000 - 99,999</option> 
+                <option value="100000">Over 100,000</option> 
               </select>
             </div>
-            
             <div class="form-group">
               <label for="inputNotes">Please include any notes or explanations.:</label>
-              <textarea class="form-control" id="inputNotes" name="inputNotes" placeholder="Additional notes or explanations"></textarea>
+              <textarea class="form-control" id="inputNotes" name="inputNotes" ng-model="leadCtrl.leadData.extra.notes" placeholder="Additional notes or explanations"></textarea>
             </div>
           </fieldset>  
           <div class="form-group">

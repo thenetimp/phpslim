@@ -2,6 +2,7 @@
 
 require_once '../../bootstrap.php';
 
+use LeadCollector\LeadQuery as LeadQuery;
 // use Hackerspace\User as User;
 // use Hackerspace\UserQuery as UserQuery;
 // use Security\HttpBasicAuth as HttpBasicAuth;
@@ -27,37 +28,28 @@ $app->group('/submission', function() use ($app)
   $app->post('/mortgage', function () use ($app)
   {
     global $body;
-    
+    $code = 200;
+    $response = array('msg' => 'success');
+
     // Instanciate the $response array..
     $response = array('error'=> false);
 
-    $submission = array(
-      // Lead's personal information.
-      'firstName' => $body['personal']['firstName'],
-      'lastName' => $body['personal']['lastName'],
-      'address' => $body['personal']['address'],
-      'city' => $body['personal']['city'],
-      'state' => $body['personal']['state'],
-      'postalCode' => $body['personal']['postalCode'],
-      'phoneNumber' => $body['personal']['phoneNumber'],
-      'alternativePhoneNumber' => $body['personal']['alternativePhoneNumber'],
-      'bestCallTime' => $body['personal']['bestCallTime'],
-      'emailAddress' => $body['personal']['emailAddress'],
+    try
+    {
+      $lq = new LeadQuery();
+      $submissionData = $lq->validateSubmission($body);
 
-      // Lead's loan information.
-      'creditRange' => $body['loan']['creditRange'],
-      'loanType' => $body['loan']['loanType'],
-      'loanAmount' => $body['loan']['loanAmount'],
-      'downPayment' => $body['loan']['downPayment'],
-      'interestRateType' => $body['loan']['interestRateType'],
-      'propertyType' => $body['loan']['propertyType'],
-      'propertyState' => $body['loan']['state'],
-      'propertyPostalCode' => $body['loan']['postalCode'],
-    );
+      $hashParams = array('lastName', 'emailAddress', 'address');
+      $response['data'] = $lq->insertSubmission($submissionData, $hashParams);
+    }
+    catch(\Exception $e)
+    {
+      $code = $e->getCode();
+      $response['error'] = 'true';
+      $response['msg'] = $e->getMessage();
+    }
 
-
-
-    $app->render(200, $response);
+    $app->render($code, $response);
   });
 });
 

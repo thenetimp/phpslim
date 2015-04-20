@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database name="default" defaultIdMethod="native" namespace="Hackerspace">
+<database name="default" defaultIdMethod="native" namespace="LeadCollector">
 
   <table name="users" phpName="User">
     <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
-    <column name="email_address" type="varchar" size="255" required="true" unique="true" />
+    <column name="emailAddress" type="varchar" size="255" required="true" unique="true" />
     <unique name="idx_email_address">
-      <unique-column name="email_address" />
+      <unique-column name="emailAddress" />
     </unique>
     <column name="real_email_address" type="varchar" size="255" required="true" comment="email addresses with the + sign parsed"/>
     <column name="password_hash" type="varchar" size="255" required="true" />
@@ -18,24 +18,96 @@
     <column name="last_login_attempt" type="timestamp" />
     <behavior name="timestampable" />
   </table>
-  
   <table name="user_groups" phpName="UserGroup">
     <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
     <column name="name" type="varchar" size="255" required="true" />
     <behavior name="timestampable" />
   </table>
-  
   <table name="user_groups_user" phpName="UserGroupUser">
     <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
-    <column name="user_id" type="integer" foreignTable="users" foreignReference="id"
+    <column name="userId" type="integer" foreignTable="users" foreignReference="id"
        required="true" onDelete="cascade" />
-    <column name="user_group_id" type="integer" foreignTable="user_groups" foreignReference="id"
+    <column name="userGroupId" type="integer" foreignTable="user_groups" foreignReference="id"
        required="true" onDelete="cascade"/>
     <unique name="idx_user_group_user">
-      <unique-column name="user_id" />
-      <unique-column name="user_group_id" />
+      <unique-column name="userId" />
+      <unique-column name="userGroupId" />
     </unique>
     <behavior name="timestampable" />
   </table>
+  <table name="clients" phpName="Client">
+    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+    <behavior name="timestampable" />
+  </table>
+  <table name="states" phpName="LeadAttribute">
+    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+    <column name="name" type="varchar" size="255" required="true" />
+    <column name="abbrv" type="varchar" size="255" required="true" />
+    <behavior name="timestampable" />
+  </table>
+  <table name="client_states" phpName="ClientState">
+    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+    <column name="clientId" type="integer" foreignTable="clients"
+      foreignReference="id" required="true" onDelete="cascade" />
+    <column name="stateId" type="integer" foreignTable="states"
+       foreignReference="id" required="true" onDelete="cascade"/>
+    <unique name="idx_client_states">
+      <unique-column name="clientId" />
+      <unique-column name="stateId" />
+    </unique>
+    <behavior name="timestampable" />
+  </table>
+
+  <table name="lead_types" phpName="LeadType">
+    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+    <column name="typeName" type="varchar" size="255" required="true" />
+    <behavior name="timestampable" />
+  </table>
+
+  <table name="leads" phpName="Lead">
+    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+    <column name="hash" type="varchar" size="255" required="true" />
+    <column name="leadTypeId" type="integer" foreignTable="lead_types"
+      foreignReference="id" required="true" onDelete="cascade" />
+    <behavior name="timestampable" />
+  </table>
+
+  <table name="lead_attributes" phpName="LeadAttribute">
+    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+    <column name="attribName" type="varchar" size="255" required="true" />
+    <unique name="idx_lead_attrib_name">
+      <unique-column name="attribName" />
+    </unique>
+    <behavior name="timestampable" />
+  </table>
+
+  <table name="lead_type_lead_attributes" phpName="LeadTypeLeadAttribute">
+    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+    <column name="leadTypeId" type="integer" foreignTable="lead_type"
+      foreignReference="id" required="true" />
+    <column name="leadAttributeId" type="integer" foreignTable="lead_attribute"
+      foreignReference="id" required="true" />
+    <unique name="idx_lead_attrib_name">
+      <unique-column name="leadTypeId" />
+      <unique-column name="leadAttributeId" />
+    </unique>
+    <behavior name="timestampable" />
+  </table>
+
+  <table name="lead_attribute_values" phpName="LeadAttributeValue">
+    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+    <column name="leadId" type="integer" foreignTable="lead"
+      foreignReference="id" required="true" onDelete="cascade" />
+    <column name="leadAttributeId" type="integer" foreignTable="lead_attributes"
+      foreignReference="id" required="true" onDelete="cascade" />
+    <column name="attribValue" type="varchar" size="255" required="true" />
+    <unique name="idx_lead_lead_attribute_value">
+      <unique-column name="leadId" />
+      <unique-column name="leadAttributeId" />
+    </unique>
+    <behavior name="timestampable" />
+  </table>
+
+
   
 </database>
