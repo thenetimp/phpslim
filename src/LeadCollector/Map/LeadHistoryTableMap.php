@@ -2,8 +2,8 @@
 
 namespace LeadCollector\Map;
 
-use LeadCollector\Lead;
-use LeadCollector\LeadQuery;
+use LeadCollector\LeadHistory;
+use LeadCollector\LeadHistoryQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'leads' table.
+ * This class defines the structure of the 'lead_history' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class LeadTableMap extends TableMap
+class LeadHistoryTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class LeadTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'LeadCollector.Map.LeadTableMap';
+    const CLASS_NAME = 'LeadCollector.Map.LeadHistoryTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class LeadTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'leads';
+    const TABLE_NAME = 'lead_history';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\LeadCollector\\Lead';
+    const OM_CLASS = '\\LeadCollector\\LeadHistory';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'LeadCollector.Lead';
+    const CLASS_DEFAULT = 'LeadCollector.LeadHistory';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 8;
+    const NUM_COLUMNS = 7;
 
     /**
      * The number of lazy-loaded columns
@@ -69,47 +69,42 @@ class LeadTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 8;
+    const NUM_HYDRATE_COLUMNS = 7;
 
     /**
      * the column name for the id field
      */
-    const COL_ID = 'leads.id';
+    const COL_ID = 'lead_history.id';
 
     /**
-     * the column name for the hash field
+     * the column name for the lead_id field
      */
-    const COL_HASH = 'leads.hash';
-
-    /**
-     * the column name for the leadTypeId field
-     */
-    const COL_LEADTYPEID = 'leads.leadTypeId';
-
-    /**
-     * the column name for the status field
-     */
-    const COL_STATUS = 'leads.status';
+    const COL_LEAD_ID = 'lead_history.lead_id';
 
     /**
      * the column name for the client_id field
      */
-    const COL_CLIENT_ID = 'leads.client_id';
+    const COL_CLIENT_ID = 'lead_history.client_id';
 
     /**
-     * the column name for the sale_time field
+     * the column name for the status field
      */
-    const COL_SALE_TIME = 'leads.sale_time';
+    const COL_STATUS = 'lead_history.status';
+
+    /**
+     * the column name for the comment field
+     */
+    const COL_COMMENT = 'lead_history.comment';
 
     /**
      * the column name for the created_at field
      */
-    const COL_CREATED_AT = 'leads.created_at';
+    const COL_CREATED_AT = 'lead_history.created_at';
 
     /**
      * the column name for the updated_at field
      */
-    const COL_UPDATED_AT = 'leads.updated_at';
+    const COL_UPDATED_AT = 'lead_history.updated_at';
 
     /**
      * The default string format for model objects of the related table
@@ -123,11 +118,11 @@ class LeadTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Hash', 'Leadtypeid', 'Status', 'ClientId', 'SaleTime', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'hash', 'leadtypeid', 'status', 'clientId', 'saleTime', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(LeadTableMap::COL_ID, LeadTableMap::COL_HASH, LeadTableMap::COL_LEADTYPEID, LeadTableMap::COL_STATUS, LeadTableMap::COL_CLIENT_ID, LeadTableMap::COL_SALE_TIME, LeadTableMap::COL_CREATED_AT, LeadTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'hash', 'leadTypeId', 'status', 'client_id', 'sale_time', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id', 'LeadId', 'ClientId', 'Status', 'Comment', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'leadId', 'clientId', 'status', 'comment', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(LeadHistoryTableMap::COL_ID, LeadHistoryTableMap::COL_LEAD_ID, LeadHistoryTableMap::COL_CLIENT_ID, LeadHistoryTableMap::COL_STATUS, LeadHistoryTableMap::COL_COMMENT, LeadHistoryTableMap::COL_CREATED_AT, LeadHistoryTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'lead_id', 'client_id', 'status', 'comment', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -137,11 +132,11 @@ class LeadTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Hash' => 1, 'Leadtypeid' => 2, 'Status' => 3, 'ClientId' => 4, 'SaleTime' => 5, 'CreatedAt' => 6, 'UpdatedAt' => 7, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'hash' => 1, 'leadtypeid' => 2, 'status' => 3, 'clientId' => 4, 'saleTime' => 5, 'createdAt' => 6, 'updatedAt' => 7, ),
-        self::TYPE_COLNAME       => array(LeadTableMap::COL_ID => 0, LeadTableMap::COL_HASH => 1, LeadTableMap::COL_LEADTYPEID => 2, LeadTableMap::COL_STATUS => 3, LeadTableMap::COL_CLIENT_ID => 4, LeadTableMap::COL_SALE_TIME => 5, LeadTableMap::COL_CREATED_AT => 6, LeadTableMap::COL_UPDATED_AT => 7, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'hash' => 1, 'leadTypeId' => 2, 'status' => 3, 'client_id' => 4, 'sale_time' => 5, 'created_at' => 6, 'updated_at' => 7, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'LeadId' => 1, 'ClientId' => 2, 'Status' => 3, 'Comment' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'leadId' => 1, 'clientId' => 2, 'status' => 3, 'comment' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
+        self::TYPE_COLNAME       => array(LeadHistoryTableMap::COL_ID => 0, LeadHistoryTableMap::COL_LEAD_ID => 1, LeadHistoryTableMap::COL_CLIENT_ID => 2, LeadHistoryTableMap::COL_STATUS => 3, LeadHistoryTableMap::COL_COMMENT => 4, LeadHistoryTableMap::COL_CREATED_AT => 5, LeadHistoryTableMap::COL_UPDATED_AT => 6, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'lead_id' => 1, 'client_id' => 2, 'status' => 3, 'comment' => 4, 'created_at' => 5, 'updated_at' => 6, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -154,19 +149,18 @@ class LeadTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('leads');
-        $this->setPhpName('Lead');
+        $this->setName('lead_history');
+        $this->setPhpName('LeadHistory');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\LeadCollector\\Lead');
+        $this->setClassName('\\LeadCollector\\LeadHistory');
         $this->setPackage('LeadCollector');
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('hash', 'Hash', 'VARCHAR', true, 255, null);
-        $this->addColumn('leadTypeId', 'Leadtypeid', 'INTEGER', true, null, null);
-        $this->addColumn('status', 'Status', 'CHAR', true, 1, 'n');
+        $this->addColumn('lead_id', 'LeadId', 'INTEGER', false, null, null);
         $this->addColumn('client_id', 'ClientId', 'INTEGER', false, null, null);
-        $this->addColumn('sale_time', 'SaleTime', 'TIMESTAMP', false, null, null);
+        $this->addColumn('status', 'Status', 'CHAR', false, 1, null);
+        $this->addColumn('comment', 'Comment', 'VARCHAR', false, 255, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, null);
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
@@ -248,7 +242,7 @@ class LeadTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? LeadTableMap::CLASS_DEFAULT : LeadTableMap::OM_CLASS;
+        return $withPrefix ? LeadHistoryTableMap::CLASS_DEFAULT : LeadHistoryTableMap::OM_CLASS;
     }
 
     /**
@@ -262,22 +256,22 @@ class LeadTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Lead object, last column rank)
+     * @return array           (LeadHistory object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = LeadTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = LeadTableMap::getInstanceFromPool($key))) {
+        $key = LeadHistoryTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = LeadHistoryTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + LeadTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + LeadHistoryTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = LeadTableMap::OM_CLASS;
-            /** @var Lead $obj */
+            $cls = LeadHistoryTableMap::OM_CLASS;
+            /** @var LeadHistory $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            LeadTableMap::addInstanceToPool($obj, $key);
+            LeadHistoryTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -300,18 +294,18 @@ class LeadTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = LeadTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = LeadTableMap::getInstanceFromPool($key))) {
+            $key = LeadHistoryTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = LeadHistoryTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Lead $obj */
+                /** @var LeadHistory $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                LeadTableMap::addInstanceToPool($obj, $key);
+                LeadHistoryTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -332,21 +326,19 @@ class LeadTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(LeadTableMap::COL_ID);
-            $criteria->addSelectColumn(LeadTableMap::COL_HASH);
-            $criteria->addSelectColumn(LeadTableMap::COL_LEADTYPEID);
-            $criteria->addSelectColumn(LeadTableMap::COL_STATUS);
-            $criteria->addSelectColumn(LeadTableMap::COL_CLIENT_ID);
-            $criteria->addSelectColumn(LeadTableMap::COL_SALE_TIME);
-            $criteria->addSelectColumn(LeadTableMap::COL_CREATED_AT);
-            $criteria->addSelectColumn(LeadTableMap::COL_UPDATED_AT);
+            $criteria->addSelectColumn(LeadHistoryTableMap::COL_ID);
+            $criteria->addSelectColumn(LeadHistoryTableMap::COL_LEAD_ID);
+            $criteria->addSelectColumn(LeadHistoryTableMap::COL_CLIENT_ID);
+            $criteria->addSelectColumn(LeadHistoryTableMap::COL_STATUS);
+            $criteria->addSelectColumn(LeadHistoryTableMap::COL_COMMENT);
+            $criteria->addSelectColumn(LeadHistoryTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(LeadHistoryTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.hash');
-            $criteria->addSelectColumn($alias . '.leadTypeId');
-            $criteria->addSelectColumn($alias . '.status');
+            $criteria->addSelectColumn($alias . '.lead_id');
             $criteria->addSelectColumn($alias . '.client_id');
-            $criteria->addSelectColumn($alias . '.sale_time');
+            $criteria->addSelectColumn($alias . '.status');
+            $criteria->addSelectColumn($alias . '.comment');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
         }
@@ -361,7 +353,7 @@ class LeadTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(LeadTableMap::DATABASE_NAME)->getTable(LeadTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(LeadHistoryTableMap::DATABASE_NAME)->getTable(LeadHistoryTableMap::TABLE_NAME);
     }
 
     /**
@@ -369,16 +361,16 @@ class LeadTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(LeadTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(LeadTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new LeadTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(LeadHistoryTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(LeadHistoryTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new LeadHistoryTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Lead or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a LeadHistory or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Lead object or primary key or array of primary keys
+     * @param mixed               $values Criteria or LeadHistory object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -389,27 +381,27 @@ class LeadTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(LeadTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(LeadHistoryTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \LeadCollector\Lead) { // it's a model object
+        } elseif ($values instanceof \LeadCollector\LeadHistory) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(LeadTableMap::DATABASE_NAME);
-            $criteria->add(LeadTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(LeadHistoryTableMap::DATABASE_NAME);
+            $criteria->add(LeadHistoryTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
-        $query = LeadQuery::create()->mergeWith($criteria);
+        $query = LeadHistoryQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            LeadTableMap::clearInstancePool();
+            LeadHistoryTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                LeadTableMap::removeInstanceFromPool($singleval);
+                LeadHistoryTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -417,20 +409,20 @@ class LeadTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the leads table.
+     * Deletes all rows from the lead_history table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return LeadQuery::create()->doDeleteAll($con);
+        return LeadHistoryQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Lead or Criteria object.
+     * Performs an INSERT on the database, given a LeadHistory or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Lead object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or LeadHistory object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -439,22 +431,22 @@ class LeadTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(LeadTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(LeadHistoryTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Lead object
+            $criteria = $criteria->buildCriteria(); // build Criteria from LeadHistory object
         }
 
-        if ($criteria->containsKey(LeadTableMap::COL_ID) && $criteria->keyContainsValue(LeadTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.LeadTableMap::COL_ID.')');
+        if ($criteria->containsKey(LeadHistoryTableMap::COL_ID) && $criteria->keyContainsValue(LeadHistoryTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.LeadHistoryTableMap::COL_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = LeadQuery::create()->mergeWith($criteria);
+        $query = LeadHistoryQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -463,7 +455,7 @@ class LeadTableMap extends TableMap
         });
     }
 
-} // LeadTableMap
+} // LeadHistoryTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-LeadTableMap::buildTableMap();
+LeadHistoryTableMap::buildTableMap();

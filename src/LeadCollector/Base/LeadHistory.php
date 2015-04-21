@@ -5,9 +5,9 @@ namespace LeadCollector\Base;
 use \DateTime;
 use \Exception;
 use \PDO;
-use LeadCollector\Lead as ChildLead;
-use LeadCollector\LeadQuery as ChildLeadQuery;
-use LeadCollector\Map\LeadTableMap;
+use LeadCollector\LeadHistory as ChildLeadHistory;
+use LeadCollector\LeadHistoryQuery as ChildLeadHistoryQuery;
+use LeadCollector\Map\LeadHistoryTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -22,18 +22,18 @@ use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'leads' table.
+ * Base class that represents a row from the 'lead_history' table.
  *
  *
  *
 * @package    propel.generator.LeadCollector.Base
 */
-abstract class Lead implements ActiveRecordInterface
+abstract class LeadHistory implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\LeadCollector\\Map\\LeadTableMap';
+    const TABLE_MAP = '\\LeadCollector\\Map\\LeadHistoryTableMap';
 
 
     /**
@@ -69,23 +69,10 @@ abstract class Lead implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the hash field.
-     * @var        string
-     */
-    protected $hash;
-
-    /**
-     * The value for the leadtypeid field.
+     * The value for the lead_id field.
      * @var        int
      */
-    protected $leadtypeid;
-
-    /**
-     * The value for the status field.
-     * Note: this column has a database default value of: 'n'
-     * @var        string
-     */
-    protected $status;
+    protected $lead_id;
 
     /**
      * The value for the client_id field.
@@ -94,10 +81,16 @@ abstract class Lead implements ActiveRecordInterface
     protected $client_id;
 
     /**
-     * The value for the sale_time field.
-     * @var        \DateTime
+     * The value for the status field.
+     * @var        string
      */
-    protected $sale_time;
+    protected $status;
+
+    /**
+     * The value for the comment field.
+     * @var        string
+     */
+    protected $comment;
 
     /**
      * The value for the created_at field.
@@ -120,23 +113,10 @@ abstract class Lead implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * Applies default values to this object.
-     * This method should be called from the object's constructor (or
-     * equivalent initialization method).
-     * @see __construct()
-     */
-    public function applyDefaultValues()
-    {
-        $this->status = 'n';
-    }
-
-    /**
-     * Initializes internal state of LeadCollector\Base\Lead object.
-     * @see applyDefaults()
+     * Initializes internal state of LeadCollector\Base\LeadHistory object.
      */
     public function __construct()
     {
-        $this->applyDefaultValues();
     }
 
     /**
@@ -228,9 +208,9 @@ abstract class Lead implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Lead</code> instance.  If
-     * <code>obj</code> is an instance of <code>Lead</code>, delegates to
-     * <code>equals(Lead)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>LeadHistory</code> instance.  If
+     * <code>obj</code> is an instance of <code>LeadHistory</code>, delegates to
+     * <code>equals(LeadHistory)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -296,7 +276,7 @@ abstract class Lead implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|Lead The current object, for fluid interface
+     * @return $this|LeadHistory The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -360,33 +340,13 @@ abstract class Lead implements ActiveRecordInterface
     }
 
     /**
-     * Get the [hash] column value.
-     *
-     * @return string
-     */
-    public function getHash()
-    {
-        return $this->hash;
-    }
-
-    /**
-     * Get the [leadtypeid] column value.
+     * Get the [lead_id] column value.
      *
      * @return int
      */
-    public function getLeadtypeid()
+    public function getLeadId()
     {
-        return $this->leadtypeid;
-    }
-
-    /**
-     * Get the [status] column value.
-     *
-     * @return string
-     */
-    public function getStatus()
-    {
-        return $this->status;
+        return $this->lead_id;
     }
 
     /**
@@ -400,23 +360,23 @@ abstract class Lead implements ActiveRecordInterface
     }
 
     /**
-     * Get the [optionally formatted] temporal [sale_time] column value.
+     * Get the [status] column value.
      *
-     *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw DateTime object will be returned.
-     *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
-     *
-     * @throws PropelException - if unable to parse/validate the date/time value.
+     * @return string
      */
-    public function getSaleTime($format = NULL)
+    public function getStatus()
     {
-        if ($format === null) {
-            return $this->sale_time;
-        } else {
-            return $this->sale_time instanceof \DateTime ? $this->sale_time->format($format) : null;
-        }
+        return $this->status;
+    }
+
+    /**
+     * Get the [comment] column value.
+     *
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->comment;
     }
 
     /**
@@ -463,7 +423,7 @@ abstract class Lead implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param  int $v new value
-     * @return $this|\LeadCollector\Lead The current object (for fluent API support)
+     * @return $this|\LeadCollector\LeadHistory The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -473,77 +433,37 @@ abstract class Lead implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[LeadTableMap::COL_ID] = true;
+            $this->modifiedColumns[LeadHistoryTableMap::COL_ID] = true;
         }
 
         return $this;
     } // setId()
 
     /**
-     * Set the value of [hash] column.
-     *
-     * @param  string $v new value
-     * @return $this|\LeadCollector\Lead The current object (for fluent API support)
-     */
-    public function setHash($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->hash !== $v) {
-            $this->hash = $v;
-            $this->modifiedColumns[LeadTableMap::COL_HASH] = true;
-        }
-
-        return $this;
-    } // setHash()
-
-    /**
-     * Set the value of [leadtypeid] column.
+     * Set the value of [lead_id] column.
      *
      * @param  int $v new value
-     * @return $this|\LeadCollector\Lead The current object (for fluent API support)
+     * @return $this|\LeadCollector\LeadHistory The current object (for fluent API support)
      */
-    public function setLeadtypeid($v)
+    public function setLeadId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->leadtypeid !== $v) {
-            $this->leadtypeid = $v;
-            $this->modifiedColumns[LeadTableMap::COL_LEADTYPEID] = true;
+        if ($this->lead_id !== $v) {
+            $this->lead_id = $v;
+            $this->modifiedColumns[LeadHistoryTableMap::COL_LEAD_ID] = true;
         }
 
         return $this;
-    } // setLeadtypeid()
-
-    /**
-     * Set the value of [status] column.
-     *
-     * @param  string $v new value
-     * @return $this|\LeadCollector\Lead The current object (for fluent API support)
-     */
-    public function setStatus($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->status !== $v) {
-            $this->status = $v;
-            $this->modifiedColumns[LeadTableMap::COL_STATUS] = true;
-        }
-
-        return $this;
-    } // setStatus()
+    } // setLeadId()
 
     /**
      * Set the value of [client_id] column.
      *
      * @param  int $v new value
-     * @return $this|\LeadCollector\Lead The current object (for fluent API support)
+     * @return $this|\LeadCollector\LeadHistory The current object (for fluent API support)
      */
     public function setClientId($v)
     {
@@ -553,38 +473,58 @@ abstract class Lead implements ActiveRecordInterface
 
         if ($this->client_id !== $v) {
             $this->client_id = $v;
-            $this->modifiedColumns[LeadTableMap::COL_CLIENT_ID] = true;
+            $this->modifiedColumns[LeadHistoryTableMap::COL_CLIENT_ID] = true;
         }
 
         return $this;
     } // setClientId()
 
     /**
-     * Sets the value of [sale_time] column to a normalized version of the date/time value specified.
+     * Set the value of [status] column.
      *
-     * @param  mixed $v string, integer (timestamp), or \DateTime value.
-     *               Empty strings are treated as NULL.
-     * @return $this|\LeadCollector\Lead The current object (for fluent API support)
+     * @param  string $v new value
+     * @return $this|\LeadCollector\LeadHistory The current object (for fluent API support)
      */
-    public function setSaleTime($v)
+    public function setStatus($v)
     {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->sale_time !== null || $dt !== null) {
-            if ($dt !== $this->sale_time) {
-                $this->sale_time = $dt;
-                $this->modifiedColumns[LeadTableMap::COL_SALE_TIME] = true;
-            }
-        } // if either are not null
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->status !== $v) {
+            $this->status = $v;
+            $this->modifiedColumns[LeadHistoryTableMap::COL_STATUS] = true;
+        }
 
         return $this;
-    } // setSaleTime()
+    } // setStatus()
+
+    /**
+     * Set the value of [comment] column.
+     *
+     * @param  string $v new value
+     * @return $this|\LeadCollector\LeadHistory The current object (for fluent API support)
+     */
+    public function setComment($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->comment !== $v) {
+            $this->comment = $v;
+            $this->modifiedColumns[LeadHistoryTableMap::COL_COMMENT] = true;
+        }
+
+        return $this;
+    } // setComment()
 
     /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTime value.
      *               Empty strings are treated as NULL.
-     * @return $this|\LeadCollector\Lead The current object (for fluent API support)
+     * @return $this|\LeadCollector\LeadHistory The current object (for fluent API support)
      */
     public function setCreatedAt($v)
     {
@@ -592,7 +532,7 @@ abstract class Lead implements ActiveRecordInterface
         if ($this->created_at !== null || $dt !== null) {
             if ($dt !== $this->created_at) {
                 $this->created_at = $dt;
-                $this->modifiedColumns[LeadTableMap::COL_CREATED_AT] = true;
+                $this->modifiedColumns[LeadHistoryTableMap::COL_CREATED_AT] = true;
             }
         } // if either are not null
 
@@ -604,7 +544,7 @@ abstract class Lead implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTime value.
      *               Empty strings are treated as NULL.
-     * @return $this|\LeadCollector\Lead The current object (for fluent API support)
+     * @return $this|\LeadCollector\LeadHistory The current object (for fluent API support)
      */
     public function setUpdatedAt($v)
     {
@@ -612,7 +552,7 @@ abstract class Lead implements ActiveRecordInterface
         if ($this->updated_at !== null || $dt !== null) {
             if ($dt !== $this->updated_at) {
                 $this->updated_at = $dt;
-                $this->modifiedColumns[LeadTableMap::COL_UPDATED_AT] = true;
+                $this->modifiedColumns[LeadHistoryTableMap::COL_UPDATED_AT] = true;
             }
         } // if either are not null
 
@@ -629,10 +569,6 @@ abstract class Lead implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->status !== 'n') {
-                return false;
-            }
-
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -659,34 +595,28 @@ abstract class Lead implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : LeadTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : LeadHistoryTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : LeadTableMap::translateFieldName('Hash', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->hash = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : LeadHistoryTableMap::translateFieldName('LeadId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->lead_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : LeadTableMap::translateFieldName('Leadtypeid', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->leadtypeid = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : LeadTableMap::translateFieldName('Status', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->status = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : LeadTableMap::translateFieldName('ClientId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : LeadHistoryTableMap::translateFieldName('ClientId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->client_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : LeadTableMap::translateFieldName('SaleTime', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
-            $this->sale_time = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : LeadHistoryTableMap::translateFieldName('Status', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->status = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : LeadTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : LeadHistoryTableMap::translateFieldName('Comment', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->comment = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : LeadHistoryTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : LeadTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : LeadHistoryTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -699,10 +629,10 @@ abstract class Lead implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 8; // 8 = LeadTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = LeadHistoryTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\LeadCollector\\Lead'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\LeadCollector\\LeadHistory'), 0, $e);
         }
     }
 
@@ -744,13 +674,13 @@ abstract class Lead implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(LeadTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(LeadHistoryTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildLeadQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildLeadHistoryQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -769,8 +699,8 @@ abstract class Lead implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Lead::setDeleted()
-     * @see Lead::isDeleted()
+     * @see LeadHistory::setDeleted()
+     * @see LeadHistory::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -779,11 +709,11 @@ abstract class Lead implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(LeadTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(LeadHistoryTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildLeadQuery::create()
+            $deleteQuery = ChildLeadHistoryQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -814,7 +744,7 @@ abstract class Lead implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(LeadTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(LeadHistoryTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -824,16 +754,16 @@ abstract class Lead implements ActiveRecordInterface
                 $ret = $ret && $this->preInsert($con);
                 // timestampable behavior
 
-                if (!$this->isColumnModified(LeadTableMap::COL_CREATED_AT)) {
+                if (!$this->isColumnModified(LeadHistoryTableMap::COL_CREATED_AT)) {
                     $this->setCreatedAt(time());
                 }
-                if (!$this->isColumnModified(LeadTableMap::COL_UPDATED_AT)) {
+                if (!$this->isColumnModified(LeadHistoryTableMap::COL_UPDATED_AT)) {
                     $this->setUpdatedAt(time());
                 }
             } else {
                 $ret = $ret && $this->preUpdate($con);
                 // timestampable behavior
-                if ($this->isModified() && !$this->isColumnModified(LeadTableMap::COL_UPDATED_AT)) {
+                if ($this->isModified() && !$this->isColumnModified(LeadHistoryTableMap::COL_UPDATED_AT)) {
                     $this->setUpdatedAt(time());
                 }
             }
@@ -845,7 +775,7 @@ abstract class Lead implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                LeadTableMap::addInstanceToPool($this);
+                LeadHistoryTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -902,39 +832,36 @@ abstract class Lead implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[LeadTableMap::COL_ID] = true;
+        $this->modifiedColumns[LeadHistoryTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . LeadTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . LeadHistoryTableMap::COL_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(LeadTableMap::COL_ID)) {
+        if ($this->isColumnModified(LeadHistoryTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(LeadTableMap::COL_HASH)) {
-            $modifiedColumns[':p' . $index++]  = 'hash';
+        if ($this->isColumnModified(LeadHistoryTableMap::COL_LEAD_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'lead_id';
         }
-        if ($this->isColumnModified(LeadTableMap::COL_LEADTYPEID)) {
-            $modifiedColumns[':p' . $index++]  = 'leadTypeId';
-        }
-        if ($this->isColumnModified(LeadTableMap::COL_STATUS)) {
-            $modifiedColumns[':p' . $index++]  = 'status';
-        }
-        if ($this->isColumnModified(LeadTableMap::COL_CLIENT_ID)) {
+        if ($this->isColumnModified(LeadHistoryTableMap::COL_CLIENT_ID)) {
             $modifiedColumns[':p' . $index++]  = 'client_id';
         }
-        if ($this->isColumnModified(LeadTableMap::COL_SALE_TIME)) {
-            $modifiedColumns[':p' . $index++]  = 'sale_time';
+        if ($this->isColumnModified(LeadHistoryTableMap::COL_STATUS)) {
+            $modifiedColumns[':p' . $index++]  = 'status';
         }
-        if ($this->isColumnModified(LeadTableMap::COL_CREATED_AT)) {
+        if ($this->isColumnModified(LeadHistoryTableMap::COL_COMMENT)) {
+            $modifiedColumns[':p' . $index++]  = 'comment';
+        }
+        if ($this->isColumnModified(LeadHistoryTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
-        if ($this->isColumnModified(LeadTableMap::COL_UPDATED_AT)) {
+        if ($this->isColumnModified(LeadHistoryTableMap::COL_UPDATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'updated_at';
         }
 
         $sql = sprintf(
-            'INSERT INTO leads (%s) VALUES (%s)',
+            'INSERT INTO lead_history (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -946,20 +873,17 @@ abstract class Lead implements ActiveRecordInterface
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'hash':
-                        $stmt->bindValue($identifier, $this->hash, PDO::PARAM_STR);
-                        break;
-                    case 'leadTypeId':
-                        $stmt->bindValue($identifier, $this->leadtypeid, PDO::PARAM_INT);
-                        break;
-                    case 'status':
-                        $stmt->bindValue($identifier, $this->status, PDO::PARAM_STR);
+                    case 'lead_id':
+                        $stmt->bindValue($identifier, $this->lead_id, PDO::PARAM_INT);
                         break;
                     case 'client_id':
                         $stmt->bindValue($identifier, $this->client_id, PDO::PARAM_INT);
                         break;
-                    case 'sale_time':
-                        $stmt->bindValue($identifier, $this->sale_time ? $this->sale_time->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                    case 'status':
+                        $stmt->bindValue($identifier, $this->status, PDO::PARAM_STR);
+                        break;
+                    case 'comment':
+                        $stmt->bindValue($identifier, $this->comment, PDO::PARAM_STR);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
@@ -1013,7 +937,7 @@ abstract class Lead implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = LeadTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = LeadHistoryTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -1033,24 +957,21 @@ abstract class Lead implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getHash();
+                return $this->getLeadId();
                 break;
             case 2:
-                return $this->getLeadtypeid();
+                return $this->getClientId();
                 break;
             case 3:
                 return $this->getStatus();
                 break;
             case 4:
-                return $this->getClientId();
+                return $this->getComment();
                 break;
             case 5:
-                return $this->getSaleTime();
-                break;
-            case 6:
                 return $this->getCreatedAt();
                 break;
-            case 7:
+            case 6:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1076,20 +997,19 @@ abstract class Lead implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
 
-        if (isset($alreadyDumpedObjects['Lead'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['LeadHistory'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Lead'][$this->hashCode()] = true;
-        $keys = LeadTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['LeadHistory'][$this->hashCode()] = true;
+        $keys = LeadHistoryTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getHash(),
-            $keys[2] => $this->getLeadtypeid(),
+            $keys[1] => $this->getLeadId(),
+            $keys[2] => $this->getClientId(),
             $keys[3] => $this->getStatus(),
-            $keys[4] => $this->getClientId(),
-            $keys[5] => $this->getSaleTime(),
-            $keys[6] => $this->getCreatedAt(),
-            $keys[7] => $this->getUpdatedAt(),
+            $keys[4] => $this->getComment(),
+            $keys[5] => $this->getCreatedAt(),
+            $keys[6] => $this->getUpdatedAt(),
         );
 
         $utc = new \DateTimeZone('utc');
@@ -1103,12 +1023,6 @@ abstract class Lead implements ActiveRecordInterface
             // When changing timezone we don't want to change existing instances
             $dateTime = clone $result[$keys[6]];
             $result[$keys[6]] = $dateTime->setTimezone($utc)->format('Y-m-d\TH:i:s\Z');
-        }
-
-        if ($result[$keys[7]] instanceof \DateTime) {
-            // When changing timezone we don't want to change existing instances
-            $dateTime = clone $result[$keys[7]];
-            $result[$keys[7]] = $dateTime->setTimezone($utc)->format('Y-m-d\TH:i:s\Z');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1129,11 +1043,11 @@ abstract class Lead implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\LeadCollector\Lead
+     * @return $this|\LeadCollector\LeadHistory
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = LeadTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = LeadHistoryTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1144,7 +1058,7 @@ abstract class Lead implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\LeadCollector\Lead
+     * @return $this|\LeadCollector\LeadHistory
      */
     public function setByPosition($pos, $value)
     {
@@ -1153,24 +1067,21 @@ abstract class Lead implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setHash($value);
+                $this->setLeadId($value);
                 break;
             case 2:
-                $this->setLeadtypeid($value);
+                $this->setClientId($value);
                 break;
             case 3:
                 $this->setStatus($value);
                 break;
             case 4:
-                $this->setClientId($value);
+                $this->setComment($value);
                 break;
             case 5:
-                $this->setSaleTime($value);
-                break;
-            case 6:
                 $this->setCreatedAt($value);
                 break;
-            case 7:
+            case 6:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1197,31 +1108,28 @@ abstract class Lead implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = LeadTableMap::getFieldNames($keyType);
+        $keys = LeadHistoryTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setHash($arr[$keys[1]]);
+            $this->setLeadId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setLeadtypeid($arr[$keys[2]]);
+            $this->setClientId($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
             $this->setStatus($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setClientId($arr[$keys[4]]);
+            $this->setComment($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setSaleTime($arr[$keys[5]]);
+            $this->setCreatedAt($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setCreatedAt($arr[$keys[6]]);
-        }
-        if (array_key_exists($keys[7], $arr)) {
-            $this->setUpdatedAt($arr[$keys[7]]);
+            $this->setUpdatedAt($arr[$keys[6]]);
         }
     }
 
@@ -1242,7 +1150,7 @@ abstract class Lead implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\LeadCollector\Lead The current object, for fluid interface
+     * @return $this|\LeadCollector\LeadHistory The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1262,31 +1170,28 @@ abstract class Lead implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(LeadTableMap::DATABASE_NAME);
+        $criteria = new Criteria(LeadHistoryTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(LeadTableMap::COL_ID)) {
-            $criteria->add(LeadTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(LeadHistoryTableMap::COL_ID)) {
+            $criteria->add(LeadHistoryTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(LeadTableMap::COL_HASH)) {
-            $criteria->add(LeadTableMap::COL_HASH, $this->hash);
+        if ($this->isColumnModified(LeadHistoryTableMap::COL_LEAD_ID)) {
+            $criteria->add(LeadHistoryTableMap::COL_LEAD_ID, $this->lead_id);
         }
-        if ($this->isColumnModified(LeadTableMap::COL_LEADTYPEID)) {
-            $criteria->add(LeadTableMap::COL_LEADTYPEID, $this->leadtypeid);
+        if ($this->isColumnModified(LeadHistoryTableMap::COL_CLIENT_ID)) {
+            $criteria->add(LeadHistoryTableMap::COL_CLIENT_ID, $this->client_id);
         }
-        if ($this->isColumnModified(LeadTableMap::COL_STATUS)) {
-            $criteria->add(LeadTableMap::COL_STATUS, $this->status);
+        if ($this->isColumnModified(LeadHistoryTableMap::COL_STATUS)) {
+            $criteria->add(LeadHistoryTableMap::COL_STATUS, $this->status);
         }
-        if ($this->isColumnModified(LeadTableMap::COL_CLIENT_ID)) {
-            $criteria->add(LeadTableMap::COL_CLIENT_ID, $this->client_id);
+        if ($this->isColumnModified(LeadHistoryTableMap::COL_COMMENT)) {
+            $criteria->add(LeadHistoryTableMap::COL_COMMENT, $this->comment);
         }
-        if ($this->isColumnModified(LeadTableMap::COL_SALE_TIME)) {
-            $criteria->add(LeadTableMap::COL_SALE_TIME, $this->sale_time);
+        if ($this->isColumnModified(LeadHistoryTableMap::COL_CREATED_AT)) {
+            $criteria->add(LeadHistoryTableMap::COL_CREATED_AT, $this->created_at);
         }
-        if ($this->isColumnModified(LeadTableMap::COL_CREATED_AT)) {
-            $criteria->add(LeadTableMap::COL_CREATED_AT, $this->created_at);
-        }
-        if ($this->isColumnModified(LeadTableMap::COL_UPDATED_AT)) {
-            $criteria->add(LeadTableMap::COL_UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(LeadHistoryTableMap::COL_UPDATED_AT)) {
+            $criteria->add(LeadHistoryTableMap::COL_UPDATED_AT, $this->updated_at);
         }
 
         return $criteria;
@@ -1304,8 +1209,8 @@ abstract class Lead implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildLeadQuery::create();
-        $criteria->add(LeadTableMap::COL_ID, $this->id);
+        $criteria = ChildLeadHistoryQuery::create();
+        $criteria->add(LeadHistoryTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1367,18 +1272,17 @@ abstract class Lead implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \LeadCollector\Lead (or compatible) type.
+     * @param      object $copyObj An object of \LeadCollector\LeadHistory (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setHash($this->getHash());
-        $copyObj->setLeadtypeid($this->getLeadtypeid());
-        $copyObj->setStatus($this->getStatus());
+        $copyObj->setLeadId($this->getLeadId());
         $copyObj->setClientId($this->getClientId());
-        $copyObj->setSaleTime($this->getSaleTime());
+        $copyObj->setStatus($this->getStatus());
+        $copyObj->setComment($this->getComment());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
         if ($makeNew) {
@@ -1396,7 +1300,7 @@ abstract class Lead implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \LeadCollector\Lead Clone of current object.
+     * @return \LeadCollector\LeadHistory Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1417,16 +1321,14 @@ abstract class Lead implements ActiveRecordInterface
     public function clear()
     {
         $this->id = null;
-        $this->hash = null;
-        $this->leadtypeid = null;
-        $this->status = null;
+        $this->lead_id = null;
         $this->client_id = null;
-        $this->sale_time = null;
+        $this->status = null;
+        $this->comment = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
-        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
@@ -1454,7 +1356,7 @@ abstract class Lead implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(LeadTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(LeadHistoryTableMap::DEFAULT_STRING_FORMAT);
     }
 
     // timestampable behavior
@@ -1462,11 +1364,11 @@ abstract class Lead implements ActiveRecordInterface
     /**
      * Mark the current object so that the update date doesn't get updated during next save
      *
-     * @return     $this|ChildLead The current object (for fluent API support)
+     * @return     $this|ChildLeadHistory The current object (for fluent API support)
      */
     public function keepUpdateDateUnchanged()
     {
-        $this->modifiedColumns[LeadTableMap::COL_UPDATED_AT] = true;
+        $this->modifiedColumns[LeadHistoryTableMap::COL_UPDATED_AT] = true;
 
         return $this;
     }

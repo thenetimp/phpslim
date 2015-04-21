@@ -37,10 +37,8 @@ $app->group('/submission', function() use ($app)
     try
     {
       $lq = new LeadQuery();
-      $submissionData = $lq->validateSubmission($body);
-
       $hashParams = array('lastName', 'emailAddress', 'address');
-      $response['data'] = $lq->insertSubmission($submissionData, $hashParams);
+      $submissionData = $lq->validateSubmission($body, $hashParams);
     }
     catch(\Exception $e)
     {

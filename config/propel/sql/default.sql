@@ -133,6 +133,9 @@ CREATE TABLE `leads`
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `hash` VARCHAR(255) NOT NULL,
     `leadTypeId` INTEGER NOT NULL,
+    `status` CHAR(1) DEFAULT 'n' NOT NULL,
+    `client_id` INTEGER,
+    `sale_time` DATETIME,
     `created_at` DATETIME,
     `updated_at` DATETIME,
     PRIMARY KEY (`id`)
@@ -187,6 +190,24 @@ CREATE TABLE `lead_attribute_values`
     `updated_at` DATETIME,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `idx_lead_lead_attribute_value` (`leadId`, `leadAttributeId`)
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- lead_history
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `lead_history`;
+
+CREATE TABLE `lead_history`
+(
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `lead_id` INTEGER,
+    `client_id` INTEGER,
+    `status` CHAR(1),
+    `comment` VARCHAR(255),
+    `created_at` DATETIME,
+    `updated_at` DATETIME,
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 # This restores the fkey checks, after having unset them earlier

@@ -22,12 +22,18 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLeadQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildLeadQuery orderByHash($order = Criteria::ASC) Order by the hash column
  * @method     ChildLeadQuery orderByLeadtypeid($order = Criteria::ASC) Order by the leadTypeId column
+ * @method     ChildLeadQuery orderByStatus($order = Criteria::ASC) Order by the status column
+ * @method     ChildLeadQuery orderByClientId($order = Criteria::ASC) Order by the client_id column
+ * @method     ChildLeadQuery orderBySaleTime($order = Criteria::ASC) Order by the sale_time column
  * @method     ChildLeadQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildLeadQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildLeadQuery groupById() Group by the id column
  * @method     ChildLeadQuery groupByHash() Group by the hash column
  * @method     ChildLeadQuery groupByLeadtypeid() Group by the leadTypeId column
+ * @method     ChildLeadQuery groupByStatus() Group by the status column
+ * @method     ChildLeadQuery groupByClientId() Group by the client_id column
+ * @method     ChildLeadQuery groupBySaleTime() Group by the sale_time column
  * @method     ChildLeadQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildLeadQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -41,6 +47,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLead findOneById(int $id) Return the first ChildLead filtered by the id column
  * @method     ChildLead findOneByHash(string $hash) Return the first ChildLead filtered by the hash column
  * @method     ChildLead findOneByLeadtypeid(int $leadTypeId) Return the first ChildLead filtered by the leadTypeId column
+ * @method     ChildLead findOneByStatus(string $status) Return the first ChildLead filtered by the status column
+ * @method     ChildLead findOneByClientId(int $client_id) Return the first ChildLead filtered by the client_id column
+ * @method     ChildLead findOneBySaleTime(string $sale_time) Return the first ChildLead filtered by the sale_time column
  * @method     ChildLead findOneByCreatedAt(string $created_at) Return the first ChildLead filtered by the created_at column
  * @method     ChildLead findOneByUpdatedAt(string $updated_at) Return the first ChildLead filtered by the updated_at column *
 
@@ -50,6 +59,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLead requireOneById(int $id) Return the first ChildLead filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLead requireOneByHash(string $hash) Return the first ChildLead filtered by the hash column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLead requireOneByLeadtypeid(int $leadTypeId) Return the first ChildLead filtered by the leadTypeId column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildLead requireOneByStatus(string $status) Return the first ChildLead filtered by the status column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildLead requireOneByClientId(int $client_id) Return the first ChildLead filtered by the client_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildLead requireOneBySaleTime(string $sale_time) Return the first ChildLead filtered by the sale_time column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLead requireOneByCreatedAt(string $created_at) Return the first ChildLead filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLead requireOneByUpdatedAt(string $updated_at) Return the first ChildLead filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -57,6 +69,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLead[]|ObjectCollection findById(int $id) Return ChildLead objects filtered by the id column
  * @method     ChildLead[]|ObjectCollection findByHash(string $hash) Return ChildLead objects filtered by the hash column
  * @method     ChildLead[]|ObjectCollection findByLeadtypeid(int $leadTypeId) Return ChildLead objects filtered by the leadTypeId column
+ * @method     ChildLead[]|ObjectCollection findByStatus(string $status) Return ChildLead objects filtered by the status column
+ * @method     ChildLead[]|ObjectCollection findByClientId(int $client_id) Return ChildLead objects filtered by the client_id column
+ * @method     ChildLead[]|ObjectCollection findBySaleTime(string $sale_time) Return ChildLead objects filtered by the sale_time column
  * @method     ChildLead[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildLead objects filtered by the created_at column
  * @method     ChildLead[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildLead objects filtered by the updated_at column
  * @method     ChildLead[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -151,7 +166,7 @@ abstract class LeadQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, hash, leadTypeId, created_at, updated_at FROM leads WHERE id = :p0';
+        $sql = 'SELECT id, hash, leadTypeId, status, client_id, sale_time, created_at, updated_at FROM leads WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -350,6 +365,119 @@ abstract class LeadQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(LeadTableMap::COL_LEADTYPEID, $leadtypeid, $comparison);
+    }
+
+    /**
+     * Filter the query on the status column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByStatus('fooValue');   // WHERE status = 'fooValue'
+     * $query->filterByStatus('%fooValue%'); // WHERE status LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $status The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildLeadQuery The current query, for fluid interface
+     */
+    public function filterByStatus($status = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($status)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $status)) {
+                $status = str_replace('*', '%', $status);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(LeadTableMap::COL_STATUS, $status, $comparison);
+    }
+
+    /**
+     * Filter the query on the client_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByClientId(1234); // WHERE client_id = 1234
+     * $query->filterByClientId(array(12, 34)); // WHERE client_id IN (12, 34)
+     * $query->filterByClientId(array('min' => 12)); // WHERE client_id > 12
+     * </code>
+     *
+     * @param     mixed $clientId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildLeadQuery The current query, for fluid interface
+     */
+    public function filterByClientId($clientId = null, $comparison = null)
+    {
+        if (is_array($clientId)) {
+            $useMinMax = false;
+            if (isset($clientId['min'])) {
+                $this->addUsingAlias(LeadTableMap::COL_CLIENT_ID, $clientId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($clientId['max'])) {
+                $this->addUsingAlias(LeadTableMap::COL_CLIENT_ID, $clientId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(LeadTableMap::COL_CLIENT_ID, $clientId, $comparison);
+    }
+
+    /**
+     * Filter the query on the sale_time column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterBySaleTime('2011-03-14'); // WHERE sale_time = '2011-03-14'
+     * $query->filterBySaleTime('now'); // WHERE sale_time = '2011-03-14'
+     * $query->filterBySaleTime(array('max' => 'yesterday')); // WHERE sale_time > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $saleTime The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildLeadQuery The current query, for fluid interface
+     */
+    public function filterBySaleTime($saleTime = null, $comparison = null)
+    {
+        if (is_array($saleTime)) {
+            $useMinMax = false;
+            if (isset($saleTime['min'])) {
+                $this->addUsingAlias(LeadTableMap::COL_SALE_TIME, $saleTime['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($saleTime['max'])) {
+                $this->addUsingAlias(LeadTableMap::COL_SALE_TIME, $saleTime['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(LeadTableMap::COL_SALE_TIME, $saleTime, $comparison);
     }
 
     /**
